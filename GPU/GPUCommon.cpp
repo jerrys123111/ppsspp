@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <type_traits>
+#include <mutex>
 
-#include "base/mutex.h"
 #include "base/timeutil.h"
 #include "Common/ColorConv.h"
 #include "Core/Reporting.h"
