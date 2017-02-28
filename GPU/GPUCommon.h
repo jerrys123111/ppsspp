@@ -222,9 +222,6 @@ protected:
 	virtual void FastRunLoop(DisplayList &list) = 0;
 	void SlowRunLoop(DisplayList &list);
 	void UpdatePC(u32 currentPC, u32 newPC);
-	void UpdatePC(u32 currentPC) {
-		UpdatePC(currentPC, currentPC);
-	}
 	void UpdateState(GPURunState state);
 	void PopDLQueue();
 	void CheckDrawSync();

@@ -133,17 +133,21 @@ bool IsOnSeparateCPUThread() {
 	}
 }
 
-void CPU_SetState(CPUThreadState to) {
-	std::lock_guard<std::mutex> guard(cpuThreadLock);
+void CPU_SetStateNoLock(CPUThreadState to) {
 	cpuThreadState = to;
 	cpuThreadCond.notify_one();
 	cpuThreadReplyCond.notify_one();
 }
 
+void CPU_SetState(CPUThreadState to) {
+	std::lock_guard<std::mutex> guard(cpuThreadLock);
+	CPU_SetStateNoLock(to);
+}
+
 bool CPU_NextState(CPUThreadState from, CPUThreadState to) {
 	std::lock_guard<std::mutex> guard(cpuThreadLock);
 	if (cpuThreadState == from) {
-		CPU_SetState(to);
+		CPU_SetStateNoLock(to);
 		return true;
 	} else {
 		return false;
@@ -153,7 +157,7 @@ bool CPU_NextState(CPUThreadState from, CPUThreadState to) {
 bool CPU_NextStateNot(CPUThreadState from, CPUThreadState to) {
 	std::lock_guard<std::mutex> guard(cpuThreadLock);
 	if (cpuThreadState != from) {
-		CPU_SetState(to);
+		CPU_SetStateNoLock(to);
 		return true;
 	} else {
 		return false;
